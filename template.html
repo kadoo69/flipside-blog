@@ -182,23 +182,14 @@ figcaption { margin-top: 10px; }
 .four span { font-size: 17.5px; line-height: 1.65; }
 
 /* sequence diagram */
-.seqwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px 14px 12px; }
-.seq { display: block; width: 100%; min-width: 760px; height: auto; font-family: var(--mono); }
-.seq .band { fill: var(--accent-soft); stroke: none; }
-.seq .life { stroke: var(--line); stroke-width: 1.5; }
-.seq .hd { font: 600 15px var(--sans); fill: var(--ink); }
-.seq .sub { font-size: 11.5px; fill: var(--muted); }
-.seq .m { stroke: var(--muted); stroke-width: 1.4; }
-.seq .m.pv { stroke-dasharray: 5 4; }
-.seq .m.ok { stroke: var(--sage); stroke-width: 2; }
-.seq .m.no { stroke: var(--rose); stroke-width: 1.6; stroke-dasharray: 3 3; }
-.seq .ah { fill: var(--muted); }
-.seq .lbl { font-size: 12.5px; fill: var(--ink); }
-.seq .lbl.no, .seq .x { fill: var(--rose); }
-.seq .x { font: 600 17px var(--sans); }
-.seq .small { font-size: 11px; }
-.seq .num { fill: var(--accent-soft); }
-.seq .numt { font: 600 11px var(--sans); fill: var(--accent); }
+.seqwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 18px 16px; }
+.mm svg { display: block; width: 100%; min-width: 720px; height: auto; margin: 0 auto; }
+.mm-dark { display: none; }
+@media (prefers-color-scheme: dark) { .mm-light { display: none; } .mm-dark { display: block; } }
+.mm line.refused { stroke: var(--rose) !important; }
+.mm text.refused { fill: var(--rose) !important; }
+.mm line.ok { stroke: var(--sage) !important; }
+.mm text.ok { fill: var(--sage) !important; }
 .seqfig figcaption { max-width: var(--measure); margin: 12px auto 0; text-align: center; }
 
 /* refusals */
@@ -373,16 +364,17 @@ footer a { color: var(--muted); }
   <article>
     <section class="col" id="problem">
       <h2>A diff tells you what. Never why.</h2>
-      <p>Omar owns the auth service.
-      A pull request lands from another team: PR #142, "Add CSV export to the reports page".
-      Priya's coding agent wrote it.</p>
-      <p>The diff is two files.
-      <code>reports/export.py</code> gets the new feature, and the tests pass.
-      But in <code>auth/session.py</code>, there is this:</p>
+      <p>Omar is one click away from approving a pull request.
+      PR #142, "Add CSV export to the reports page", from another team.
+      Priya's coding agent wrote it.
+      Then Omar, who owns the auth service, scrolls to the second file.</p>
+      <p>The first file, <code>reports/export.py</code>, adds the feature, and the tests pass.
+      The second file is <code>auth/session.py</code>.
+      Nobody asked for a change there.</p>
       <pre class="code"><span class="del">- SESSION_TTL = 3600</span>
 <span class="add">+ SESSION_TTL = 86400</span></pre>
-      <p>Sessions now last a day instead of an hour.
-      The description does not mention it.</p>
+      <p>Every login now lasts a day instead of an hour.
+      The description does not say a word about it.</p>
       <p>Omar can ask Priya.
       But Priya did not make that change.
       Her agent did, somewhere in a long session Omar cannot see.
@@ -410,7 +402,7 @@ footer a { color: var(--muted); }
 
     <figure class="wide seqfig near">
       <div class="seqwrap">{{SEQUENCE}}</div>
-      <figcaption>The whole review, message by message. Every arrow passes through the Switch room, and message 4 stops there.</figcaption>
+      <figcaption>The whole review, message by message. Message 4 is Omar trying to grab everything. Switch stops it before Priya's agent ever sees it.</figcaption>
     </figure>
 
     <section class="col near">
@@ -426,7 +418,8 @@ footer a { color: var(--muted); }
       <p>That is a conversation the auth team needs to have.
       Now it starts from the facts.</p>
       <div class="note"><strong>No model decides anything.</strong><p>The questions, the checks and the brief are deterministic Python on the standard library. The AI in this story is the coding agent that wrote the PR, not the reviewer.</p></div>
-      <p>Which leaves one question: what stops Omar from asking Priya's agent for the whole session?</p>
+      <p>Which leaves one question.
+      What stops Omar from simply asking Priya's agent for the whole session?</p>
     </section>
 
     <section class="col" id="switch">
@@ -482,7 +475,8 @@ footer a { color: var(--muted); }
 
     <section class="col" id="first-agent">
       <h2>Your first Switch agent</h2>
-      <p>Everything in Flipside is built from five moves.
+      <p>Five minutes from now, you can have your own agent talking in a Switch room.
+      Everything in Flipside is built from the same five moves.
       Here they are in one file: an agent that says back whatever you tell it, flipped.</p>
       <p>You need <a href="https://github.com/sandbox-quantum/switch/releases/latest">Switch Console</a> running (it starts a local Switch server at <code>http://127.0.0.1:52370</code>) and Python 3.
       Nothing to install.</p>
@@ -543,6 +537,7 @@ footer a { color: var(--muted); }
     <section class="col" id="lessons">
       <h2>Seven things Switch taught us</h2>
       <p>Each of these cost us hours.
+      Read them now and they cost you none.
       All were checked on switch-core 0.31.0; newer versions may differ.</p>
       <ol class="lessons">
         <li><div><h3>If Switch answers for your agent, your agent is not connected.</h3><p>When an addressed message reaches an agent with no live stream, Switch replies on its behalf: "I don't have a session connected to this room." That line means: check the stream, not your code.</p></div></li>

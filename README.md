@@ -8,6 +8,9 @@ Read it at https://kadoo69.github.io/flipside-blog/ (interactive) or as [Markdow
 
 - `template.html`: the page; `python3 build.py` writes `index.html`.
 - `draft.md`: the text; `python3 build_md.py` writes `index.md`, the agent-readable copy.
+- `diagram/sequence.mmd`: the review as a Mermaid sequence diagram, the one source for the page and `index.md`.
+  `npm install` adds the pinned Mermaid CLI, and `build.py` then re-renders `diagram/seq-light.svg` and `seq-dark.svg`.
+  The SVGs are committed, so the page builds without Node and loads no JavaScript library.
 - `code/flip_agent.py`: the 76-line Switch agent from the post, standard library only.
 - `verify-core.js`: Flipside's in-browser verifier, copied verbatim from its `site/verify.html`.
 - `data/`: Flipside's synthetic example disclosure, manifest and seal trailer.

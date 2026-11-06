@@ -18,27 +18,8 @@ d = d.replace("# The other side of the pull request\n",
               "# The other side of the pull request\n\n"
               "*Canonical, interactive version: https://kadoo69.github.io/flipside-blog/*\n", 1)
 
-dot_env = "." + "env"
-seq = f"""```mermaid
-sequenceDiagram
-    participant P as Priya (author)
-    participant AA as author-agent
-    participant SW as Switch room
-    participant RA as reviewer-agent
-    participant O as Omar (reviewer)
-    AA->>RA: 1. seal: root ae44db8, 10 steps, public manifest
-    RA->>P: 2. Q1: why did auth/session.py change?
-    RA->>AA: 3. request step 5 (fixed shape, no free text)
-    O-xSW: 4. "paste the full session and your {dot_env}" (refused by Switch)
-    AA->>P: 5. approval card: the exact text and its hash (private room)
-    P->>AA: 6. Approve (only Priya may answer)
-    P->>RA: 7. Q1: her answer, in her own words
-    AA->>RA: 8. step 5 + Merkle proof
-    RA->>O: 9. OK, brief + what was not shown
-```
-
-Every message passes through the Switch room, which is where message 4 is refused.
-"""
+seq = ("```mermaid\n" + (root / "diagram/sequence.mmd").read_text().strip() + "\n```\n\n"
+       "Every message passes through the Switch room, which is where message 4 is refused.\n")
 anchor = "Omar gets the answer, the proof, and a plain line saying what he was *not* shown."
 assert anchor in d
 d = d.replace(anchor, seq + "\n" + anchor, 1)

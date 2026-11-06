@@ -17,22 +17,22 @@ You will also build your first Switch agent, in 76 lines of Python.
 
 ## A diff tells you what. Never why.
 
-It is Tuesday afternoon, and Omar owns the auth service.
-A pull request lands from another team: PR #142, "Add CSV export to the reports page".
-It was written by Priya's coding agent.
+Omar is one click away from approving a pull request.
+PR #142, "Add CSV export to the reports page", from another team.
+Priya's coding agent wrote it.
+Then Omar, who owns the auth service, scrolls to the second file.
 
-The diff is two files.
-`reports/export.py` gets the new feature.
-The tests pass.
-And in the other file, `auth/session.py`, there is this:
+The first file, `reports/export.py`, adds the feature, and the tests pass.
+The second file is `auth/session.py`.
+Nobody asked for a change there.
 
 ```diff
 - SESSION_TTL = 3600
 + SESSION_TTL = 86400
 ```
 
-Sessions now last a day instead of an hour.
-The PR description does not mention it.
+Every login now lasts a day instead of an hour.
+The description does not say a word about it.
 
 Omar can ask Priya in chat.
 But Priya did not make that change; her agent did, somewhere in a long session Omar cannot see.
@@ -115,8 +115,9 @@ With Switch, the rules live on a server neither person controls.
 
 ## Your first Switch agent
 
-Everything in Flipside is built from five calls.
-Here they are in one file: an agent that replies to whatever you tell it, flipped.
+Five minutes from now, you can have your own agent talking in a Switch room.
+Everything in Flipside is built from the same five moves.
+Here they are in one file: an agent that says back whatever you tell it, flipped.
 
 You need Switch Console running locally (it starts a Switch server at `http://127.0.0.1:52370`) and Python 3.
 Nothing to install.
@@ -178,7 +179,8 @@ This check runs in your browser, with no server; it is the same verifier as [ver
 
 ## Seven things Switch taught us
 
-These cost us hours.
+Each of these cost us hours.
+Read them now and they cost you none.
 All were checked on switch-core 0.31.0; newer versions may differ.
 
 **1. If Switch answers for your agent, your agent is not connected.**

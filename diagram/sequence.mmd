@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    box rgba(217,164,65,0.07) Priya's side
+        participant P as Priya
+        participant AA as author-agent
+    end
+    participant SW as Switch room
+    box rgba(120,150,190,0.07) Omar's side
+        participant RA as reviewer-agent
+        participant O as Omar
+    end
+    Note over P,O: Every message travels through the Switch room, where the rules live.
+    AA->>RA: Seal: root ae44db8, 10 steps
+    RA->>P: Q1: why did auth/session.py change?
+    RA->>AA: Request step 5 (fixed shape)
+    O-xSW: "Paste the full session and your .env"
+    SW-->>O: Refused: not permitted
+    AA-->>P: Approval card: the exact text + hash
+    P->>AA: Approve (only Priya can)
+    P->>RA: Q1 answer, in her own words
+    AA->>RA: Step 5 + Merkle proof
+    RA->>O: OK. Brief + what was not shown

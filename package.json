@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "Build-time tools only: renders diagram/*.mmd to static SVG. The published page loads no JavaScript library.",
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "11.17.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+ "theme": "base",
+ "themeVariables": {
+  "fontFamily": "Inter, ui-sans-serif, system-ui, sans-serif",
+  "fontSize": "15px",
+  "background": "transparent",
+  "primaryColor": "#fffdf9",
+  "primaryBorderColor": "#d9cfbf",
+  "primaryTextColor": "#23252a",
+  "lineColor": "#7a7e86",
+  "textColor": "#23252a",
+  "actorBkg": "#fffdf9",
+  "actorBorder": "#d9cfbf",
+  "actorTextColor": "#23252a",
+  "actorLineColor": "#d6cfc2",
+  "signalColor": "#55595f",
+  "signalTextColor": "#23252a",
+  "sequenceNumberColor": "#fffdf9",
+  "noteBkgColor": "#f6ead2",
+  "noteBorderColor": "#e6d3a6",
+  "noteTextColor": "#5b4310",
+  "labelBoxBkgColor": "#fffdf9",
+  "labelBoxBorderColor": "#d9cfbf",
+  "labelTextColor": "#23252a"
+ },
+ "sequence": {
+  "diagramMarginX": 8,
+  "diagramMarginY": 8,
+  "actorMargin": 56,
+  "messageMargin": 44,
+  "boxMargin": 12,
+  "boxTextMargin": 6,
+  "noteMargin": 12,
+  "mirrorActors": false,
+  "showSequenceNumbers": true,
+  "messageFontSize": 15,
+  "actorFontSize": 15,
+  "noteFontSize": 14
+ }
+}

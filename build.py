@@ -10,6 +10,7 @@ seal trailer from examples/seal.bundle).
 import html
 import json
 import re
+import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -20,63 +21,54 @@ TOKEN = re.compile(
 )
 
 
-LANES = {"P": 125, "AA": 300, "SW": 497, "RA": 715, "O": 893}
-HEADS = [("P", "Priya", "author"), ("AA", "author-agent", "Priya's laptop"),
-         ("SW", "Switch", "rooms + policies"), ("RA", "reviewer-agent", "Omar's machine"),
-         ("O", "Omar", "reviewer")]
-MSGS = [
-    ("AA", "RA", "seal: root ae44db8 · 10 steps · public manifest", ""),
-    ("RA", "P", "Q1: why did auth/session.py change?", ""),
-    ("RA", "AA", "request step 5 (fixed shape, no free text)", ""),
-    ("O", "AA", "\"paste the full session and your .env\"", "no"),
-    ("AA", "P", "approval card: exact text + hash", "private"),
-    ("P", "AA", "Approve (only Priya can)", ""),
-    ("P", "RA", "Q1: her answer, in her own words", ""),
-    ("AA", "RA", "step 5 + Merkle proof", ""),
-    ("RA", "O", "OK ✓ · brief + what was not shown", "ok"),
-]
+DIAGRAM = HERE / "diagram"
+MMDC = HERE / "node_modules/.bin/mmdc"
+# Messages drawn in a status colour, by (from, to) participant ids in diagram/sequence.mmd.
+TONES = {("O", "SW"): "refused", ("SW", "O"): "refused", ("RA", "O"): "ok"}
+
+
+def render_diagram() -> None:
+    """Render diagram/sequence.mmd to light and dark SVG with Mermaid, when the CLI is installed.
+
+    The SVGs are committed, so the page builds without Node; run `npm install` to re-render.
+    """
+    if not MMDC.exists():
+        return
+    for mode in ("light", "dark"):
+        subprocess.run([str(MMDC), "-q", "-i", str(DIAGRAM / "sequence.mmd"),
+                        "-o", str(DIAGRAM / f"seq-{mode}.svg"), "-c", str(DIAGRAM / f"{mode}.json"),
+                        "-C", str(DIAGRAM / "fonts.css"), "-I", f"seq-{mode}", "-b", "transparent"],
+                       check=True)
+
+
+def tidy(svg: str) -> str:
+    """Fit the viewBox to Mermaid's group boxes, drop their black outline, tag status messages."""
+    vb = [float(v) for v in re.search(r'viewBox="([^"]+)"', svg).group(1).split()]
+    boxes = [(float(x), float(w)) for x, w in re.findall(
+        r'<rect x="([-\d.]+)"[^>]*?width="([\d.]+)"[^>]*class="rect"', svg)]
+    left = min([vb[0]] + [x - 2 for x, _ in boxes])
+    right = max([vb[0] + vb[2]] + [x + w + 2 for x, w in boxes])
+    vb[0], vb[2] = left, right - left
+    svg = re.sub(r'viewBox="[^"]+"', 'viewBox="%g %g %g %g"' % tuple(vb), svg, count=1)
+    svg = re.sub(r'style="max-width: [\d.]+px;', f'style="max-width: {vb[2]:g}px;', svg, count=1)
+    svg = svg.replace('stroke="rgb(0,0,0, 0.5)"', 'stroke="none"')
+
+    def tone(m: re.Match) -> str:
+        kind = TONES.get((m.group(3), m.group(4)))
+        return (m.group(1) + (f" {kind}" if kind else "") + m.group(2)) if kind else m.group(0)
+
+    svg = re.sub(r'(<text[^>]*class="messageText)("(?:(?!<text).)*?<line[^>]*data-from="(\w+)" '
+                 r'data-to="(\w+)")', tone, svg, flags=re.S)
+    svg = re.sub(r'(<line[^>]*class="messageLine\d)("[^>]*data-from="(\w+)" data-to="(\w+)")',
+                 tone, svg)
+    assert svg.count(" refused") == 4 and svg.count(" ok") >= 2, "status messages not tagged"
+    return svg
 
 
 def sequence() -> str:
-    top, step = 96, 50
-    h = top + step * len(MSGS) + 10
-    o = [f'<svg class="seq" viewBox="0 0 960 {h}" role="img" aria-labelledby="seq-t seq-d">',
-         '<title id="seq-t">One Flipside review, message by message</title>',
-         '<desc id="seq-d">Nine messages between Priya, author-agent, Switch, reviewer-agent '
-         'and Omar. Every message passes through the Switch room. Omar\'s request for the '
-         'whole session is refused by Switch.</desc>',
-         '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
-         'markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" '
-         'class="ah"/></marker></defs>',
-         f'<rect class="band" x="427" y="56" width="140" height="{h - 60}" rx="12"/>']
-    for k, name, sub in HEADS:
-        x = LANES[k]
-        if k != "SW":
-            o.append(f'<line class="life" x1="{x}" y1="60" x2="{x}" y2="{h - 6}"/>')
-        o.append(f'<text class="hd" x="{x}" y="22" text-anchor="middle">{name}</text>')
-        o.append(f'<text class="sub" x="{x}" y="40" text-anchor="middle">{sub}</text>')
-    for n, (a, b, label, kind) in enumerate(MSGS, 1):
-        y = top + (n - 1) * step + 14
-        x1, x2 = LANES[a], LANES[b]
-        d = 1 if x2 > x1 else -1
-        cls = {"no": "m no", "ok": "m ok", "private": "m pv"}.get(kind, "m")
-        if kind == "no":
-            xe = 567 + 6
-            o.append(f'<line class="{cls}" x1="{x1}" y1="{y}" x2="{xe}" y2="{y}"/>')
-            o.append(f'<text class="x" x="{xe - 4}" y="{y + 6}" text-anchor="end">✕</text>')
-            o.append(f'<text class="lbl no" x="{(x1 + xe) / 2}" y="{y - 9}" '
-                     'text-anchor="middle">' + html.escape(label) + "</text>")
-            o.append(f'<text class="lbl no small" x="{497}" y="{y + 22}" text-anchor="middle">'
-                     "refused: not permitted</text>")
-        else:
-            o.append(f'<line class="{cls}" x1="{x1 + 6 * d}" y1="{y}" x2="{x2 - 6 * d}" '
-                     f'y2="{y}" marker-end="url(#ah)"/>')
-            o.append(f'<text class="lbl" x="{(x1 + x2) / 2}" y="{y - 9}" text-anchor="middle">'
-                     + html.escape(label) + "</text>")
-        o.append(f'<circle class="num" cx="24" cy="{y}" r="11"/>'
-                 f'<text class="numt" x="24" y="{y + 4}" text-anchor="middle">{n}</text>')
-    o.append("</svg>")
-    return "\n".join(o)
+    render_diagram()
+    return "".join(f'<div class="mm mm-{m}">' + tidy((DIAGRAM / f"seq-{m}.svg").read_text())
+                   + "</div>" for m in ("light", "dark"))
 
 
 def highlight(line: str) -> str:
