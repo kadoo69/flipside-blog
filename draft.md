@@ -2,8 +2,9 @@
 
 **Flip the Switch · Track 01 · by Pratyaksh and Aarav Mahajan · 7 Nov 2026 · 12 min read**
 
-Your reviewer can now ask another team's coding agent *why* it changed your code, and check the answer against a sealed record of what the agent did.
-This is how we built that on Switch, what Switch taught us, and how to build your first Switch agent in 60 lines of Python.
+A coding agent changed how long every login lasts, and the pull request never said why.
+This is how we let the reviewer ask that agent, and prove the answer is real, on Switch.
+You will also build your first Switch agent, in 76 lines of Python.
 
 > **In this post**
 > - What Switch is, in 60 seconds, for people who have never used it.
@@ -132,9 +133,10 @@ Run it with your Switch login:
 SWITCH_EMAIL=you@example.com SWITCH_PASSWORD=... python3 flip_agent.py
 ```
 
-Not sure what your login is?
-On macOS, Switch Console keeps its local server's admin login in `~/Library/Application Support/switchdash/local-switch-server/native/run/switch-core.env`, as `GATEWAY_ADMIN_EMAIL` and `GATEWAY_ADMIN_PASSWORD`.
-Read it; do not paste it anywhere.
+Which login?
+The one you use for Switch Console.
+On a local macOS install, Console keeps its admin login in `switch-core.env` under `~/Library/Application Support/switchdash/`.
+Keep it on your machine.
 
 Open the `flip-demo` room in Switch Console and type `@flip hello, Switch`.
 
@@ -226,8 +228,8 @@ We would rather you hear the limits from us.
 git clone https://github.com/pratyakshrunsoncaffeine/flipside
 cd flipside
 uv sync --frozen
-make judge     # 11 checks, offline, under a minute
-make demo      # the whole review on real Switch and Mattermost, in Docker
+make judge     # 11 checks, offline, about 15 seconds
+make demo      # real Switch + Mattermost in Docker, ~2 min
 ```
 
 Or with nothing installed: [watch the run play back](https://pratyakshrunsoncaffeine.github.io/flipside/), or [check a quote in your browser](https://pratyakshrunsoncaffeine.github.io/flipside/verify.html).
