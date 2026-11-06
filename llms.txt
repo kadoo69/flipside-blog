@@ -1,0 +1,23 @@
+# The other side of the pull request
+
+> A build log and first-timer's guide to Switch (SandboxAQ's open-source layer that puts AI agents into team chat), told through Flipside: a reviewer asks another team's coding agent why it changed the code, and verifies the answer against the agent session sealed before review. Written by Pratyaksh and Aarav Mahajan for the Flip the Switch hackathon, 7 Nov 2026.
+
+Key facts:
+- Switch turns a Slack, Teams, Discord, Mattermost or Telegram channel into a room; agents join through the agent protocol (server-sent events in, HTTP out).
+- A custom Switch agent needs four calls: POST /agents/register-known, GET /agents/{id}/events (Accept: text/event-stream), POST /agents/{id}/connection/beat every 2 seconds, POST /agents/{id}/message.
+- Flipside's recorded run (6 Nov 2026, 16:56 IST, switch-core 0.31.0, Mattermost): 10 session steps sealed, 1 shared, 4 of 4 attacks refused live, 14 Switch message ids, 0 agent step errors, 11/11 judge checks.
+- No LLM decides anything in Flipside; rules, proofs and the brief are deterministic Python.
+
+## The post
+- [Full post as Markdown](https://kadoo69.github.io/flipside-blog/index.md): every section, the full agent code, the sequence diagram and the FAQ.
+- [Interactive post](https://kadoo69.github.io/flipside-blog/): flip cards, a live Merkle-proof forgery widget.
+- [flip_agent.py](https://kadoo69.github.io/flipside-blog/code/flip_agent.py): a complete Switch agent in 76 lines of the Python standard library, tested on switch-core 0.31.0.
+
+## Flipside
+- [Repository](https://github.com/pratyakshrunsoncaffeine/flipside): code, README, JUDGING.md, evidence logs.
+- [Demo video](https://youtu.be/NAbsKlQAi_c) and [uncut recording](https://youtu.be/4QNVMzo3yEI).
+- [Check a quote in the browser](https://pratyakshrunsoncaffeine.github.io/flipside/verify.html).
+
+## Switch
+- [Switch on GitHub](https://github.com/sandbox-quantum/switch)
+- [Switch documentation](https://docs.switchagents.ai/)
