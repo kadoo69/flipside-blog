@@ -167,6 +167,27 @@ pre.code .del { color: var(--rose); }
 .room div { display: grid; grid-template-columns: 6em 1fr; gap: 12px; }
 .room b { font-weight: 500; color: var(--muted); }
 .room .agent b { color: var(--accent); }
+.setup { counter-reset: s; list-style: none; padding: 0 !important; display: grid; gap: 14px; margin: 24px 0 32px !important; }
+.setup li { counter-increment: s; display: grid; grid-template-columns: 2em 1fr; gap: 12px; margin: 0; font: 400 17px/1.6 var(--sans); color: var(--body); min-width: 0; }
+.setup li::before { content: counter(s); width: 1.7em; height: 1.7em; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font: 600 14px/1 var(--sans); margin-top: .15em; }
+.setup b { color: var(--ink); font-weight: 600; }
+.setup code { overflow-wrap: anywhere; }
+.fixwrap { overflow-x: auto; margin: 24px 0 8px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.fixes { width: 100%; border-collapse: collapse; font: 400 15.5px/1.5 var(--sans); color: var(--body); min-width: 560px; }
+.fixes th { text-align: left; font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+.fixes td { padding: 12px 16px; vertical-align: top; border-bottom: 1px solid var(--line); }
+.fixes tr:last-child td { border-bottom: 0; }
+.fixes td:first-child { color: var(--ink); width: 38%; }
+.fixes q { quotes: "\201C" "\201D"; font-style: italic; }
+@media (max-width: 600px) {
+  .fixes { min-width: 0; }
+  .fixes thead { display: none; }
+  .fixes tr { display: block; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .fixes tr:last-child { border-bottom: 0; }
+  .fixes td { display: block; padding: 0; border: 0; width: auto !important; }
+  .fixes td:first-child { font-weight: 600; margin-bottom: 6px; }
+  .fixes code { overflow-wrap: anywhere; }
+}
 
 figure { margin: 36px 0; }
 figure img { border-radius: 12px; border: 1px solid var(--line); }
@@ -357,6 +378,7 @@ footer a { color: var(--muted); }
       <li><span>What Switch is, in 60 seconds, if you have never used it.</span></li>
       <li><span>A complete Switch agent in one file, no SDK, that runs in five minutes.</span></li>
       <li><span>Seven things about Switch that cost us hours, so they cost you none.</span></li>
+      <li><span>A table that turns each Switch error message into its fix.</span></li>
     </ul>
     <p class="hurry">In a hurry? <a href="#video">Watch the 2-minute video</a>, or <a href="#first-agent">go straight to your first agent</a>.</p>
   </div>
@@ -478,8 +500,13 @@ footer a { color: var(--muted); }
       <p>Five minutes from now, you can have your own agent talking in a Switch room.
       Everything in Flipside is built from the same five moves.
       Here they are in one file: an agent that says back whatever you tell it, flipped.</p>
-      <p>You need <a href="https://github.com/sandbox-quantum/switch/releases/latest">Switch Console</a> running (it starts a local Switch server at <code>http://127.0.0.1:52370</code>) and Python 3.
-      Nothing to install.</p>
+      <h3 id="before-you-start">Before you start</h3>
+      <ol class="setup">
+        <li><span><b>Install <a href="https://github.com/sandbox-quantum/switch/releases/latest">Switch Console</a></b>, the desktop app. It runs Mattermost for you in Docker, so start Docker first.</span></li>
+        <li><span><b>Start a local server.</b> In Console, choose <b>On this computer</b>, then <b>Start</b>, and wait for "Local server is running". Console creates the admin account and the Mattermost team.</span></li>
+        <li><span><b>Find your server address.</b> Console picks free ports, so yours can differ from ours. On macOS, open <code>~/Library/Application Support/switchdash/local-switch-server/ports.json</code> and read <code>api</code>. Ours is 52370, the agent's default. If yours differs, set <code>SWITCH_BASE=http://127.0.0.1:&lt;api&gt;</code>.</span></li>
+        <li><span><b>Python 3.</b> Nothing to install: the agent uses only the standard library.</span></li>
+      </ol>
       <div class="listing">
         <div class="copyrow"><button class="btn" id="copy-code" type="button">Copy flip_agent.py</button><a class="btn" href="code/flip_agent.py">Open the file</a></div>
         <pre class="code" id="code">{{FLIP_AGENT}}</pre>
@@ -548,6 +575,24 @@ footer a { color: var(--muted); }
         <li><div><h3>Bodies in snake_case, responses in camelCase.</h3><p>Agent endpoints want <code>start_source</code> and reply with <code>sessionId</code>. Send the wrong case and you get a 422.</p></div></li>
         <li><div><h3>Policies match people by an id you cannot see.</h3><p>A policy rule's <code>users</code> field matches a member id the gateway does not expose. We wrote our rules in terms of owners and agents instead, which you can see.</p></div></li>
       </ol>
+      <h3 id="if-you-see">If you see this, do this</h3>
+      <p>Switch explains most failures in plain words, in the room.
+      The quoted lines are Switch's own replies, taken from the switch-core 0.31.0 source.</p>
+      <div class="fixwrap"><table class="fixes">
+        <thead><tr><th>You see</th><th>Do this</th></tr></thead>
+        <tbody>
+          <tr><td>Switch replies for your agent: <q>I don't have a session connected to this room.</q></td><td>Your agent has no live stream in this room. Start it, and check the two rows below.</td></tr>
+          <tr><td>The heartbeat returns 404.</td><td>Open the event stream first, then start the heartbeat.</td></tr>
+          <tr><td>The stream opens, but no events arrive.</td><td>Send the header <code>Accept: text/event-stream</code>.</td></tr>
+          <tr><td><q>I'm currently offline - my connector isn't reporting in.</q></td><td>Switch has no heartbeat from this agent yet. Beat every 2 seconds. A message sent in the first seconds after start can arrive before the agent is live, so send it again.</td></tr>
+          <tr><td><q>You're not permitted to direct messages to me in this room</q></td><td>The agent's addressing policy does not admit you. Its owner or an admin changes it with <code>PUT /gateway/agents/{id}/addressing-policy</code>.</td></tr>
+          <tr><td><q>I only take instructions from my owner, and this chat account isn't linked to a Switch user yet</q></td><td>You may be the owner, but Switch cannot tell. Link this chat account to your Switch user in Switch Console.</td></tr>
+          <tr><td>401 when your agent reads the room's history.</td><td><code>GET /gateway/chats/{room}/messages</code> does not accept an agent key. Read it with the owner's session.</td></tr>
+          <tr><td>422 on an agent call.</td><td>Send the body in snake_case, for example <code>start_source</code>.</td></tr>
+          <tr><td>Your agent answers its own messages, forever.</td><td>Skip events whose sender is the agent itself. <code>flip_agent.py</code> does this in step 5.</td></tr>
+          <tr><td>A new review shows answers from an old one.</td><td>Rooms remember. Read only the messages after this round's questions.</td></tr>
+        </tbody>
+      </table></div>
     </section>
 
     <section class="col" id="limits">
@@ -568,6 +613,7 @@ footer a { color: var(--muted); }
         <details open><summary>What is Switch?</summary><p>Switch is open-source infrastructure from SandboxAQ that puts AI agents into team chat. Each Slack, Teams, Discord, Mattermost or Telegram channel becomes a room, a shared log that people and agents both read. Agents join under their own names through the agent protocol: server-sent events in, HTTP out.</p></details>
         <details><summary>What is Flipside?</summary><p>Flipside lets a code reviewer ask another team's coding agent why it made a change, and verify the answer against the agent session sealed before review. The author shares only the steps they approve. It runs on Switch and does not work without Switch's rooms, addressing policies and approval cards.</p></details>
         <details><summary>How do I build a custom agent for Switch?</summary><p>Register it with <code>POST /agents/register-known</code>, open its event stream at <code>GET /agents/{id}/events</code> with <code>Accept: text/event-stream</code>, send <code>POST /agents/{id}/connection/beat</code> every 2 seconds, and reply with <code>POST /agents/{id}/message</code>. The 76-line <a href="code/flip_agent.py">flip_agent.py</a> above does all of it with the Python standard library.</p></details>
+        <details><summary>Which address and port is my local Switch server on?</summary><p>Switch Console picks free ports when it starts a local server, so the port differs between machines. On macOS, read <code>api</code> in <code>~/Library/Application Support/switchdash/local-switch-server/ports.json</code>. The agent in this post defaults to 52370; set <code>SWITCH_BASE</code> if yours differs.</p></details>
         <details><summary>Why does Switch say "I don't have a session connected to this room"?</summary><p>Switch sends that reply on an agent's behalf when a message addressed to the agent arrives and the agent has no live event stream. Check that the stream is open, that you sent <code>Accept: text/event-stream</code>, and that heartbeats start after the stream opens.</p></details>
         <details><summary>Does Flipside use an LLM?</summary><p>No. The questions, proof checks, coverage and brief are deterministic Python on the standard library. The AI in the story is the coding agent that wrote the pull request.</p></details>
         <details><summary>Can Flipside catch a forged session?</summary><p>It catches any change made after sealing: one changed character gives <code>PROOF_FAIL</code>. It cannot catch a session that was forged before it was sealed.</p></details>

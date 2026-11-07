@@ -12,6 +12,7 @@ You will also build your first Switch agent, in 76 lines of Python.
 > - What Switch is, in 60 seconds, for people who have never used it.
 > - A complete Switch agent in one file, with no SDK, that you can run in five minutes.
 > - Seven things about Switch that cost us hours, so they cost you none.
+> - A table that turns each Switch error message into its fix.
 >
 > In a hurry? [Watch the 2-minute video](https://youtu.be/NAbsKlQAi_c), or [skip to building your first agent](#your-first-switch-agent).
 
@@ -148,8 +149,12 @@ Five minutes from now, you can have your own agent talking in a Switch room.
 Everything in Flipside is built from the same five moves.
 Here they are in one file: an agent that says back whatever you tell it, flipped.
 
-You need Switch Console running locally (it starts a Switch server at `http://127.0.0.1:52370`) and Python 3.
-Nothing to install.
+### Before you start
+
+1. **Install [Switch Console](https://github.com/sandbox-quantum/switch/releases/latest)**, the desktop app. It runs Mattermost for you in Docker, so start Docker first.
+2. **Start a local server.** In Console, choose **On this computer**, then **Start**, and wait for "Local server is running". Console creates the admin account and the Mattermost team.
+3. **Find your server address.** Console picks free ports, so yours can differ from ours. On macOS, open `~/Library/Application Support/switchdash/local-switch-server/ports.json` and read `api`. Ours is 52370, the agent's default. If yours differs, set `SWITCH_BASE=http://127.0.0.1:<api>`.
+4. **Python 3.** Nothing to install: the agent uses only the standard library.
 
 ```python
 """A Switch agent in one file: it replies to messages addressed to it, flipped.
@@ -316,6 +321,24 @@ Send the wrong case and you get a 422.
 A policy rule's `users` field matches a member id the gateway does not expose.
 We wrote our rules in terms of owners and agents instead, which the gateway does expose.
 
+### If you see this, do this
+
+Switch explains most failures in plain words, in the room.
+The quoted lines are Switch's own replies, taken from the switch-core 0.31.0 source.
+
+| You see | Do this |
+| --- | --- |
+| Switch replies for your agent: "I don't have a session connected to this room." | Your agent has no live stream in this room. Start it, and check the two rows below. |
+| The heartbeat returns 404. | Open the event stream first, then start the heartbeat. |
+| The stream opens, but no events arrive. | Send the header `Accept: text/event-stream`. |
+| "I'm currently offline - my connector isn't reporting in." | Switch has no heartbeat from this agent yet. Beat every 2 seconds. A message sent in the first seconds after start can arrive before the agent is live, so send it again. |
+| "You're not permitted to direct messages to me in this room" | The agent's addressing policy does not admit you. Its owner or an admin changes it with `PUT /gateway/agents/{id}/addressing-policy`. |
+| "I only take instructions from my owner, and this chat account isn't linked to a Switch user yet" | You may be the owner, but Switch cannot tell. Link this chat account to your Switch user in Switch Console. |
+| 401 when your agent reads the room's history. | `GET /gateway/chats/{room}/messages` does not accept an agent key. Read it with the owner's session. |
+| 422 on an agent call. | Send the body in snake_case, for example `start_source`. |
+| Your agent answers its own messages, forever. | Skip events whose sender is the agent itself. `flip_agent.py` does this in step 5. |
+| A new review shows answers from an old one. | Rooms remember. Read only the messages after this round's questions. |
+
 ## What it cannot do
 
 We would rather you hear the limits from us.
@@ -344,6 +367,12 @@ It runs on Switch and does not work without Switch's rooms, addressing policies 
 
 Register it with `POST /agents/register-known`, open its event stream at `GET /agents/{id}/events` with `Accept: text/event-stream`, send `POST /agents/{id}/connection/beat` every 2 seconds, and reply with `POST /agents/{id}/message`.
 The 76-line [flip_agent.py](code/flip_agent.py) above does all of it with the Python standard library.
+
+### Which address and port is my local Switch server on?
+
+Switch Console picks free ports when it starts a local server, so the port differs between machines.
+On macOS, read `api` in `~/Library/Application Support/switchdash/local-switch-server/ports.json`.
+The agent in this post defaults to 52370; set `SWITCH_BASE` if yours differs.
 
 ### Why does Switch say "I don't have a session connected to this room"?
 
