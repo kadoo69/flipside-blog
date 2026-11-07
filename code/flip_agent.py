@@ -3,7 +3,13 @@
 Standard library only.
 Run: SWITCH_EMAIL=... SWITCH_PASSWORD=... python3 flip_agent.py
 """
-import http.cookiejar, json, os, threading, time, urllib.request, uuid
+import http.cookiejar
+import json
+import os
+import threading
+import time
+import urllib.request
+import uuid
 
 BASE = os.environ.get("SWITCH_BASE", "http://127.0.0.1:52370")
 web = urllib.request.build_opener()

@@ -13,7 +13,8 @@ Key facts:
 ## The post
 - [Full post as Markdown](https://kadoo69.github.io/flipside-blog/index.md): every section, the full agent code, the sequence diagram and the FAQ.
 - [Interactive post](https://kadoo69.github.io/flipside-blog/): flip cards, a live Merkle-proof forgery widget.
-- [flip_agent.py](https://kadoo69.github.io/flipside-blog/code/flip_agent.py): a complete Switch agent in 76 lines of the Python standard library, tested on switch-core 0.31.0.
+- [flip_agent.py](https://kadoo69.github.io/flipside-blog/code/flip_agent.py): a complete Switch agent in 82 lines of the Python standard library, tested on switch-core 0.31.0.
+- [say.py](https://kadoo69.github.io/flipside-blog/code/say.py): talk to that agent from a second terminal, as yourself, and print its reply. Console 0.40.1 does not list the agent's room.
 
 ## Flipside
 - [Repository](https://github.com/pratyakshrunsoncaffeine/flipside): code, README, JUDGING.md, evidence logs.

@@ -110,7 +110,7 @@ def jsonld(t: str) -> str:
          "headline": "The other side of the pull request",
          "description": "How we built Flipside on Switch: a reviewer asks another team's "
          "coding agent why it changed the code, and checks the answer against the agent "
-         "session sealed before review. Includes a 76-line Switch agent in Python.",
+         "session sealed before review. Includes a 82-line Switch agent in Python.",
          "datePublished": "2026-11-07", "dateModified": "2026-11-07", "inLanguage": "en",
          "author": authors, "image": SITE + "media/flipside-film-poster.jpg",
          "mainEntityOfPage": SITE,
@@ -134,7 +134,7 @@ def jsonld(t: str) -> str:
                    "text": re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", d)).strip()}
                   for i, (n, d) in enumerate(steps)]},
         {"@type": "SoftwareSourceCode", "name": "flip_agent.py",
-         "description": "A complete Switch agent in 76 lines of the Python standard library.",
+         "description": "A complete Switch agent in 82 lines of the Python standard library.",
          "programmingLanguage": "Python", "url": SITE + "code/flip_agent.py"},
         {"@type": "FAQPage", "@id": SITE + "#faq", "mainEntity": faq(t)},
     ]

@@ -6,7 +6,7 @@
 
 A coding agent changed how long every login lasts, and the pull request never said why.
 This is how we let the reviewer ask that agent, and prove the answer is real, on Switch.
-You will also build your first Switch agent, in 76 lines of Python.
+You will also build your first Switch agent, in 82 lines of Python.
 
 ![Priya approves step 5 in her private Mattermost room; seconds later the shared room shows the verdict: OK against the seal](https://kadoo69.github.io/flipside-blog/media/approve.gif)
 
@@ -17,7 +17,7 @@ You will also build your first Switch agent, in 76 lines of Python.
 - **1 of 10** session steps shared, all 10 sealed first.
 - **4 of 4** attacks refused live on Switch.
 - **11 of 11** judge checks pass, offline.
-- **76** lines for your first Switch agent.
+- **82** lines for your first Switch agent.
 - **0** LLM calls in Flipside.
 
 > **In this post**
@@ -176,7 +176,13 @@ No desktop, or need a server your whole team shares? [Deploy Switch yourself](ht
 Standard library only.
 Run: SWITCH_EMAIL=... SWITCH_PASSWORD=... python3 flip_agent.py
 """
-import http.cookiejar, json, os, threading, time, urllib.request, uuid
+import http.cookiejar
+import json
+import os
+import threading
+import time
+import urllib.request
+import uuid
 
 BASE = os.environ.get("SWITCH_BASE", "http://127.0.0.1:52370")
 web = urllib.request.build_opener()
@@ -260,14 +266,18 @@ The one you use for Switch Console.
 On our macOS install (Console 0.40.1), Console keeps its admin login in `switch-core.env` under `~/Library/Application Support/switchdash/`.
 Keep it on your machine.
 
-Then post `@flip hello, Switch` in the `flip-demo` room.
+The agent prints `room ready: flip-demo` and waits.
+That room is a Switch chat with no messaging app attached, so Console 0.40.1 does not list it.
+Talk to the agent from a second terminal with [`say.py`](code/say.py), which signs in as you and posts in the room:
 
 ```
-Admin   @flip hello, Switch
-flip    hctiwS ,olleh
+SWITCH_EMAIL=you@example.com SWITCH_PASSWORD=... \
+  python3 say.py hello, Switch
+you   @flip hello, Switch
+flip  hctiwS ,olleh
 ```
 
-That is a real exchange from our machine, on Switch Console 0.40.1 with switch-core 0.31.0, on 6 Nov 2026.
+That is a real exchange from our machine, on Switch Console 0.40.1 with switch-core 0.31.0, on 7 Nov 2026.
 
 Here is what each numbered step does.
 
@@ -311,7 +321,7 @@ Seeing that line is your cue to check the stream, not your code.
 **2. Open the stream first, then send heartbeats, and ask for `text/event-stream`.**
 Our first heartbeat went out before the stream existed and got a 404.
 Without an `Accept: text/event-stream` header, our stream stayed silent.
-Both bugs are in the 76 lines above, fixed.
+Both bugs are in the 82 lines above, fixed.
 
 **3. An agent cannot read the room's history with its own key.**
 `GET /gateway/chats/{room}/messages` with an agent key returns 401.
@@ -381,7 +391,7 @@ It runs on Switch and does not work without Switch's rooms, addressing policies 
 ### How do I build a custom agent for Switch?
 
 Register it with `POST /agents/register-known`, open its event stream at `GET /agents/{id}/events` with `Accept: text/event-stream`, send `POST /agents/{id}/connection/beat` every 2 seconds, and reply with `POST /agents/{id}/message`.
-The 76-line [flip_agent.py](code/flip_agent.py) above does all of it with the Python standard library.
+The 82-line [flip_agent.py](code/flip_agent.py) above does all of it with the Python standard library.
 
 ### Which address and port is my local Switch server on?
 
@@ -426,7 +436,7 @@ Or with nothing installed: [watch the run play back](https://pratyakshrunsoncaff
 > - A diff shows what changed; the agent's session shows why.
 > - Flipside seals the session before review, lets the reviewer ask for one step, and proves the step is real.
 > - The author approves every step that leaves; Switch refuses everyone else.
-> - A Switch agent is an event stream, a heartbeat and an HTTP post. Start with the 76 lines above.
+> - A Switch agent is an event stream, a heartbeat and an HTTP post. Start with the 82 lines above.
 
 *Built in four days for Flip the Switch by Pratyaksh and Aarav Mahajan.
 All people, code and sessions in this post are synthetic.

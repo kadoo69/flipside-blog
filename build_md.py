@@ -9,7 +9,7 @@ d = (root / "draft.md").read_text()
 code = (root / "code/flip_agent.py").read_text()
 
 d = d.replace("""```python
-# flip_agent.py: the full file is 76 lines, linked below
+# flip_agent.py: the full file is 82 lines, linked below
 ```
 
 [Full listing of `code/flip_agent.py`, with the five numbered comments as margin notes.]""",
@@ -52,8 +52,6 @@ def lines(a: str) -> str:
 faq = "## Questions people ask us\n\n" + "\n\n".join(
     f"### {md(q)}\n\n{lines(a)}" for q, a in pairs) + "\n\n"
 d = d.replace("## Try it in a minute", faq + "## Try it in a minute", 1)
-d = d.replace("Open the `flip-demo` room in Switch Console and type `@flip hello, Switch`.",
-              "Then post `@flip hello, Switch` in the `flip-demo` room.")
 d = re.sub(r"\[Interactive: .*?\]",
            "The interactive version of this post lets you edit the quote and watch the verdict "
            "flip from `OK` to `PROOF_FAIL`, with the Merkle path recomputed live: "

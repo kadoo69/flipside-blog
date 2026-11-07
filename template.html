@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The other side of the pull request · Flipside</title>
-<meta name="description" content="How we built Flipside on Switch: ask another team's coding agent why it changed your code, and check the answer against a sealed session. Plus your first Switch agent in 76 lines.">
+<meta name="description" content="How we built Flipside on Switch: ask another team's coding agent why it changed your code, and check the answer against a sealed session. Plus your first Switch agent in 82 lines.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The other side of the pull request">
-<meta property="og:description" content="Ask another team's coding agent why, and get proof. Built on Switch, with your first Switch agent in 76 lines.">
+<meta property="og:description" content="Ask another team's coding agent why, and get proof. Built on Switch, with your first Switch agent in 82 lines.">
 <meta property="og:url" content="{{SITE}}">
 <meta property="og:image" content="{{SITE}}media/flipside-film-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -348,7 +348,7 @@ footer a { color: var(--muted); }
     <div class="wide">
       <p class="kicker">Flip the Switch · Track 01 · Build log</p>
       <h1>The other side of the pull request</h1>
-      <p class="dek">A coding agent changed how long every login lasts, and the pull request never said why. This is how we let the reviewer ask that agent, and prove the answer is real, on Switch. You will also build your first Switch agent, in 76 lines.</p>
+      <p class="dek">A coding agent changed how long every login lasts, and the pull request never said why. This is how we let the reviewer ask that agent, and prove the answer is real, on Switch. You will also build your first Switch agent, in 82 lines.</p>
       <div class="byline"><span>Pratyaksh &amp; Aarav Mahajan</span><span>7 Nov 2026</span><span>12 min read</span></div>
     </div>
   </header>
@@ -390,7 +390,7 @@ footer a { color: var(--muted); }
     <div><dt>1 of 10</dt><dd>session steps shared, all 10 sealed first</dd></div>
     <div><dt>4 of 4</dt><dd>attacks refused live on Switch</dd></div>
     <div><dt>11 of 11</dt><dd>judge checks pass, offline</dd></div>
-    <div><dt>76</dt><dd>lines for your first Switch agent</dd></div>
+    <div><dt>82</dt><dd>lines for your first Switch agent</dd></div>
     <div><dt>0</dt><dd>LLM calls in Flipside</dd></div>
   </dl>
 
@@ -547,9 +547,11 @@ footer a { color: var(--muted); }
       <p>Run it with your Switch login:</p>
       <pre class="code">SWITCH_EMAIL=you@example.com SWITCH_PASSWORD=... python3 flip_agent.py</pre>
       <div class="note"><strong>Which login?</strong><p>The one you use for Switch Console. On our macOS install (Console 0.40.1), Console keeps its admin login in <code>switch-core.env</code> under <code>~/Library/Application Support/switchdash/</code>. Keep it on your machine.</p></div>
-      <p>Then post <code>@flip hello, Switch</code> in the <code>flip-demo</code> room:</p>
-      <div class="room"><div><b>Admin</b><span>@flip hello, Switch</span></div><div class="agent"><b>flip</b><span>hctiwS ,olleh</span></div></div>
-      <p>That is a real exchange from our machine, on Switch Console 0.40.1 with switch-core 0.31.0, on 6 Nov 2026.</p>
+      <p>The agent prints <code>room ready: flip-demo</code> and waits. That room is a Switch chat with no messaging app attached, so Console 0.40.1 does not list it. Talk to the agent from a second terminal with <a href="code/say.py"><code>say.py</code></a>, which signs in as you and posts in the room:</p>
+      <pre class="code">SWITCH_EMAIL=you@example.com SWITCH_PASSWORD=... \
+  python3 say.py hello, Switch</pre>
+      <div class="room"><div><b>you</b><span>@flip hello, Switch</span></div><div class="agent"><b>flip</b><span>hctiwS ,olleh</span></div></div>
+      <p>That is a real exchange from our machine, on Switch Console 0.40.1 with switch-core 0.31.0, on 7 Nov 2026.</p>
       <p>Flipside's two agents are this same loop, plus rules about what to say.
       reviewer-agent adds a question rule and a proof check.
       author-agent adds a seal and an approval card, which is two more calls: <code>POST /agent-sessions/{sid}/started</code>, then <code>POST /agent-sessions/{sid}/approvals</code>.
@@ -594,7 +596,7 @@ footer a { color: var(--muted); }
       All were checked on switch-core 0.31.0; newer versions may differ.</p>
       <ol class="lessons">
         <li><div><h3>If Switch answers for your agent, your agent is not connected.</h3><p>When an addressed message reaches an agent with no live stream, Switch replies on its behalf: "I don't have a session connected to this room." That line means: check the stream, not your code.</p></div></li>
-        <li><div><h3>Open the stream first, then send heartbeats, and ask for <code>text/event-stream</code>.</h3><p>Our first heartbeat went out before the stream existed and got a 404. Without an <code>Accept: text/event-stream</code> header, our stream stayed silent. Both are fixed in the 76 lines above.</p></div></li>
+        <li><div><h3>Open the stream first, then send heartbeats, and ask for <code>text/event-stream</code>.</h3><p>Our first heartbeat went out before the stream existed and got a 404. Without an <code>Accept: text/event-stream</code> header, our stream stayed silent. Both are fixed in the 82 lines above.</p></div></li>
         <li><div><h3>An agent cannot read the room's history with its own key.</h3><p><code>GET /gateway/chats/{room}/messages</code> with an agent key returns 401. Our agents read the transcript through their owner's session, and take <code>addressed</code> from their own event stream. Both carry the same <code>sw_…</code> message id, so they line up.</p></div></li>
         <li><div><h3>The first agent in a room hears everything.</h3><p>A room's first agent receives messages nobody tagged, so its policy decides those too. Our reviewer-agent was first in its room, so it had to admit the author's plain answers explicitly, or it would have refused every one.</p></div></li>
         <li><div><h3>A room remembers.</h3><p>Reuse a room for a second review and the first review's answers are still there. We shipped this bug twice: stale verdicts (<a href="https://github.com/pratyakshrunsoncaffeine/flipside/pull/89">#89</a>) and stale answers (<a href="https://github.com/pratyakshrunsoncaffeine/flipside/issues/94">#94</a>). The fix both times: read only the current round, meaning messages after this round's questions, for this seal.</p></div></li>
@@ -639,7 +641,7 @@ footer a { color: var(--muted); }
       <div class="faq">
         <details open><summary>What is Switch?</summary><p>Switch is open-source infrastructure from SandboxAQ that puts AI agents into team chat. Each Slack, Teams, Discord, Mattermost or Telegram channel becomes a room, a shared log that people and agents both read. Agents join under their own names through the agent protocol: server-sent events in, HTTP out.</p></details>
         <details><summary>What is Flipside?</summary><p>Flipside lets a code reviewer ask another team's coding agent why it made a change, and verify the answer against the agent session sealed before review. The author shares only the steps they approve. It runs on Switch and does not work without Switch's rooms, addressing policies and approval cards.</p></details>
-        <details><summary>How do I build a custom agent for Switch?</summary><p>Register it with <code>POST /agents/register-known</code>, open its event stream at <code>GET /agents/{id}/events</code> with <code>Accept: text/event-stream</code>, send <code>POST /agents/{id}/connection/beat</code> every 2 seconds, and reply with <code>POST /agents/{id}/message</code>. The 76-line <a href="code/flip_agent.py">flip_agent.py</a> above does all of it with the Python standard library.</p></details>
+        <details><summary>How do I build a custom agent for Switch?</summary><p>Register it with <code>POST /agents/register-known</code>, open its event stream at <code>GET /agents/{id}/events</code> with <code>Accept: text/event-stream</code>, send <code>POST /agents/{id}/connection/beat</code> every 2 seconds, and reply with <code>POST /agents/{id}/message</code>. The 82-line <a href="code/flip_agent.py">flip_agent.py</a> above does all of it with the Python standard library.</p></details>
         <details><summary>Which address and port is my local Switch server on?</summary><p>Switch Console picks free ports when it starts a local server, so the port differs between machines. On macOS, read <code>api</code> in <code>~/Library/Application Support/switchdash/local-switch-server/ports.json</code>. The agent in this post defaults to 52370; set <code>SWITCH_BASE</code> if yours differs.</p></details>
         <details><summary>Why does Switch say "I don't have a session connected to this room"?</summary><p>Switch sends that reply on an agent's behalf when a message addressed to the agent arrives and the agent has no live event stream. Check that the stream is open, that you sent <code>Accept: text/event-stream</code>, and that heartbeats start after the stream opens.</p></details>
         <details><summary>Does Flipside use an LLM?</summary><p>No. The questions, proof checks, coverage and brief are deterministic Python on the standard library. The AI in the story is the coding agent that wrote the pull request.</p></details>
@@ -668,7 +670,7 @@ make demo    <span class="c"># real Switch + Mattermost in Docker, ~2 min</span>
           <li><span>A diff shows what changed; the agent's session shows why.</span></li>
           <li><span>Flipside seals the session before review, lets the reviewer ask for one step, and proves the step is real.</span></li>
           <li><span>The author approves every step that leaves; Switch refuses everyone else.</span></li>
-          <li><span>A Switch agent is an event stream, a heartbeat and an HTTP post. Start with the 76 lines above.</span></li>
+          <li><span>A Switch agent is an event stream, a heartbeat and an HTTP post. Start with the 82 lines above.</span></li>
         </ul>
       </div>
     </section>
