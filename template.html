@@ -130,6 +130,20 @@ h1 { font-size: clamp(38px, 5.6vw, 62px); line-height: 1.06; letter-spacing: -.0
 .caption, figcaption { font: 400 14.5px/1.55 var(--sans); color: var(--muted); }
 .caption { margin: 12px auto 0; max-width: var(--measure); text-align: center; text-wrap: balance; }
 
+.glance { max-width: 780px; margin: 56px auto 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--sans); }
+.glance div { padding: 18px 10px 16px; text-align: center; min-width: 0; }
+.glance div + div { border-left: 1px solid var(--line); }
+.glance dt { white-space: nowrap; font: 600 clamp(24px, 2.6vw, 30px)/1.1 var(--sans); letter-spacing: -.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.glance dd { margin: 6px 0 0; font: 400 13.5px/1.4 var(--sans); color: var(--muted); text-wrap: balance; }
+@media (max-width: 600px) {
+  .glance { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .glance div + div { border-left: 0; }
+  .glance div:nth-child(even) { border-left: 1px solid var(--line); }
+  .glance div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .glance div:last-child { grid-column: 1 / -1; border-left: 0; }
+}
+.approve-gif img { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; border-radius: 12px; border: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { .approve-gif img { max-width: 100%; } }
 .inpost { margin: 64px auto 0; padding: 22px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; font-family: var(--sans); }
 .inpost h2 { font: 600 14px/1 var(--sans); color: var(--muted); margin: 0 0 14px; }
 .inpost ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 16.5px; line-height: 1.5; color: var(--body); }
@@ -372,6 +386,14 @@ footer a { color: var(--muted); }
     <p class="caption">Front: the diff, which anyone can see. Back: the agent's session. Only step 5's text was shared.</p>
   </div>
 
+  <dl class="glance col" aria-label="At a glance">
+    <div><dt>1 of 10</dt><dd>session steps shared, all 10 sealed first</dd></div>
+    <div><dt>4 of 4</dt><dd>attacks refused live on Switch</dd></div>
+    <div><dt>11 of 11</dt><dd>judge checks pass, offline</dd></div>
+    <div><dt>76</dt><dd>lines for your first Switch agent</dd></div>
+    <div><dt>0</dt><dd>LLM calls in Flipside</dd></div>
+  </dl>
+
   <div class="inpost col">
     <h2>In this post</h2>
     <ul>
@@ -380,7 +402,7 @@ footer a { color: var(--muted); }
       <li><span>Seven things about Switch that cost us hours, so they cost you none.</span></li>
       <li><span>A table that turns each Switch error message into its fix.</span></li>
     </ul>
-    <p class="hurry">In a hurry? <a href="#video">Watch the 2-minute video</a>, or <a href="#first-agent">go straight to your first agent</a>.</p>
+    <p class="hurry">In a hurry? <a href="#forge">Try to forge a quote</a> in your browser, no install. Or <a href="#video">watch the 2-minute video</a>, or <a href="#first-agent">go straight to your first agent</a>.</p>
   </div>
 
   <article>
@@ -429,8 +451,11 @@ footer a { color: var(--muted); }
 
     <section class="col near">
       <figure>
-        <img src="media/mattermost-approve.jpg" width="1110" height="340" alt="The approval card in Priya's private Mattermost room: Disclose step 5 chunk 0 to #pr-142? with the exact text and its hash" loading="lazy">
-        <figcaption>The approval card in Priya's private Mattermost room. She sees the exact bytes before anything is shared.</figcaption>
+        <picture class="approve-gif">
+          <source media="(prefers-reduced-motion: reduce)" srcset="media/mattermost-approve.jpg" width="1110" height="340">
+          <img src="media/approve.gif" width="620" height="788" alt="Priya's private Mattermost room: the card asks to disclose step 5 with its exact text and hash, she clicks Approve, and the shared room then shows the reviewer's verdict: OK against seal ae44db8" loading="lazy">
+        </picture>
+        <figcaption>Priya sees the exact bytes and approves. Seconds later the shared room shows the verdict: OK against the seal. Real time, from the uncut run.</figcaption>
       </figure>
       <p>Omar gets the answer, the proof, and a plain line saying what he was <i>not</i> shown.
       Priya shares one step out of ten.
@@ -507,6 +532,7 @@ footer a { color: var(--muted); }
         <li><span><b>Find your server address.</b> Console picks free ports, so yours can differ from ours. On macOS, open <code>~/Library/Application Support/switchdash/local-switch-server/ports.json</code> and read <code>api</code>. Ours is 52370, the agent's default. If yours differs, set <code>SWITCH_BASE=http://127.0.0.1:&lt;api&gt;</code>.</span></li>
         <li><span><b>Python 3.</b> Nothing to install: the agent uses only the standard library.</span></li>
       </ol>
+      <p>No desktop, or need a server your whole team shares? <a href="https://docs.switchagents.ai/switch-rooms/deploy/self-host">Deploy Switch yourself</a> with Docker Compose, then set <code>SWITCH_BASE</code> to the server's own address (often port 8000).</p>
       <div class="listing">
         <div class="copyrow"><button class="btn" id="copy-code" type="button">Copy flip_agent.py</button><a class="btn" href="code/flip_agent.py">Open the file</a></div>
         <pre class="code" id="code">{{FLIP_AGENT}}</pre>
@@ -591,6 +617,7 @@ footer a { color: var(--muted); }
           <tr><td>422 on an agent call.</td><td>Send the body in snake_case, for example <code>start_source</code>.</td></tr>
           <tr><td>Your agent answers its own messages, forever.</td><td>Skip events whose sender is the agent itself. <code>flip_agent.py</code> does this in step 5.</td></tr>
           <tr><td>A new review shows answers from an old one.</td><td>Rooms remember. Read only the messages after this round's questions.</td></tr>
+          <tr><td>On Linux, Console says Docker is not running, or not installed.</td><td>Check that <code>id</code> lists the <code>docker</code> group, and that the Docker Compose plugin is installed. Details in <a href="https://docs.switchagents.ai/switch-rooms/resources/troubleshooting#cant-reach-docker">Switch's troubleshooting guide</a>.</td></tr>
         </tbody>
       </table></div>
     </section>

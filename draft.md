@@ -6,13 +6,25 @@ A coding agent changed how long every login lasts, and the pull request never sa
 This is how we let the reviewer ask that agent, and prove the answer is real, on Switch.
 You will also build your first Switch agent, in 76 lines of Python.
 
+![Priya approves step 5 in her private Mattermost room; seconds later the shared room shows the verdict: OK against the seal](https://kadoo69.github.io/flipside-blog/media/approve.gif)
+
+*Real time, from the uncut run on 6 Nov 2026.*
+
+**At a glance**
+
+- **1 of 10** session steps shared, all 10 sealed first.
+- **4 of 4** attacks refused live on Switch.
+- **11 of 11** judge checks pass, offline.
+- **76** lines for your first Switch agent.
+- **0** LLM calls in Flipside.
+
 > **In this post**
 > - What Switch is, in 60 seconds, for people who have never used it.
 > - A complete Switch agent in one file, with no SDK, that you can run in five minutes.
 > - Seven things about Switch that cost us hours, so they cost you none.
 > - A table that turns each Switch error message into its fix.
 >
-> In a hurry? [Watch the 2-minute video](https://youtu.be/NAbsKlQAi_c), or [skip to building your first agent](#your-first-switch-agent).
+> In a hurry? [Try to forge a quote](https://kadoo69.github.io/flipside-blog/#forge) in your browser, no install. Or [watch the 2-minute video](https://youtu.be/NAbsKlQAi_c), or [skip to building your first agent](#your-first-switch-agent).
 
 ---
 
@@ -127,6 +139,8 @@ Here they are in one file: an agent that says back whatever you tell it, flipped
 3. **Find your server address.** Console picks free ports, so yours can differ from ours. On macOS, open `~/Library/Application Support/switchdash/local-switch-server/ports.json` and read `api`. Ours is 52370, the agent's default. If yours differs, set `SWITCH_BASE=http://127.0.0.1:<api>`.
 4. **Python 3.** Nothing to install: the agent uses only the standard library.
 
+No desktop, or need a server your whole team shares? [Deploy Switch yourself](https://docs.switchagents.ai/switch-rooms/deploy/self-host) with Docker Compose, then set `SWITCH_BASE` to the server's own address (often port 8000).
+
 ```python
 # flip_agent.py: the full file is 76 lines, linked below
 ```
@@ -236,6 +250,7 @@ The quoted lines are Switch's own replies, taken from the switch-core 0.31.0 sou
 | 422 on an agent call. | Send the body in snake_case, for example `start_source`. |
 | Your agent answers its own messages, forever. | Skip events whose sender is the agent itself. `flip_agent.py` does this in step 5. |
 | A new review shows answers from an old one. | Rooms remember. Read only the messages after this round's questions. |
+| On Linux, Console says Docker is not running, or not installed. | Check that `id` lists the `docker` group, and that the Docker Compose plugin is installed. Details in [Switch's troubleshooting guide](https://docs.switchagents.ai/switch-rooms/resources/troubleshooting#cant-reach-docker). |
 
 ## What it cannot do
 
