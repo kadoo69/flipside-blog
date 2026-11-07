@@ -155,6 +155,27 @@ Take Switch away and both agents run in one process holding both people's keys.
 That proves nothing about two owners.
 With Switch, the rules live on a server neither person controls.
 
+### Two machines, one real pull request
+
+Priya and Omar are test accounts.
+So on 5 Nov we also ran Flipside between the two of us, on two machines.
+Aarav was the author, on a Mac that also ran Switch.
+Pratyaksh ran reviewer-agent on a Windows PC, reaching that Switch server over a private network.
+
+The pull request was real: PR #2 in a private sandbox repo we made for testing, written by a real Claude Code session.
+We asked Claude Code for a JSON export and a longer timeout.
+The PR description mentions only the export.
+That is the gap we wanted Flipside to catch.
+
+It did.
+reviewer-agent asked: "`config.py` changed and the PR description does not mention it. Why?"
+Aarav answered that the agent raised `TIMEOUT_SECONDS` from 30 to 120 in step 3, and approved the five pieces of that step on the approval cards.
+All five checked OK against the seal, on the other machine.
+The brief said what stayed private: 3 of the 4 sealed steps that touched `config.py`.
+When Pratyaksh asked Aarav's agent for the whole session, Switch refused.
+
+*Both machines' logs: [the author's Mac](https://github.com/pratyakshrunsoncaffeine/flipside/blob/e52a849bf7f6ac8f7f9e5ea1d9c0ad5987d42ca5/evidence/m2-author-20261105T172923.log) and [the reviewer's Windows PC](https://github.com/pratyakshrunsoncaffeine/flipside/blob/e52a849bf7f6ac8f7f9e5ea1d9c0ad5987d42ca5/evidence/m2-reviewer-20261105T172644.log).*
+
 ## Your first Switch agent
 
 Five minutes from now, you can have your own agent talking in a Switch room.
@@ -439,5 +460,5 @@ Or with nothing installed: [watch the run play back](https://pratyakshrunsoncaff
 > - A Switch agent is an event stream, a heartbeat and an HTTP post. Start with the 82 lines above.
 
 *Built in four days for Flip the Switch by Pratyaksh and Aarav Mahajan.
-All people, code and sessions in this post are synthetic.
+Priya, Omar and PR #142 are synthetic; the two-machine run is real.
 [Video](https://youtu.be/NAbsKlQAi_c) · [Uncut recording](https://youtu.be/4QNVMzo3yEI) · [Repo](https://github.com/pratyakshrunsoncaffeine/flipside)*

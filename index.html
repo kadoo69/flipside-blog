@@ -520,6 +520,22 @@ footer a { color: var(--muted); }
         </button>
       </div>
       <p class="caption" style="text-align:left;margin-left:0">The 2-minute demo: the idea, then the real run. <a href="https://youtu.be/4QNVMzo3yEI">The uncut recording</a> is 67 seconds, nothing cut.</p>
+      <h3 id="two-machines">Two machines, one real pull request</h3>
+      <p>Priya and Omar are test accounts.
+      So on 5 Nov we also ran Flipside between the two of us, on two machines.
+      Aarav was the author, on a Mac that also ran Switch.
+      Pratyaksh ran reviewer-agent on a Windows PC, reaching that Switch server over a private network.</p>
+      <p>The pull request was real: PR #2 in a private sandbox repo we made for testing, written by a real Claude Code session.
+      We asked Claude Code for a JSON export and a longer timeout.
+      The PR description mentions only the export.
+      That is the gap we wanted Flipside to catch.</p>
+      <p>It did.
+      reviewer-agent asked: "<code>config.py</code> changed and the PR description does not mention it. Why?"
+      Aarav answered that the agent raised <code>TIMEOUT_SECONDS</code> from 30 to 120 in step 3, and approved the five pieces of that step on the approval cards.
+      All five checked OK against the seal, on the other machine.
+      The brief said what stayed private: 3 of the 4 sealed steps that touched <code>config.py</code>.
+      When Pratyaksh asked Aarav's agent for the whole session, Switch refused.</p>
+      <p class="caption" style="text-align:left;margin-left:0">Both machines' logs: <a href="https://github.com/pratyakshrunsoncaffeine/flipside/blob/e52a849bf7f6ac8f7f9e5ea1d9c0ad5987d42ca5/evidence/m2-author-20261105T172923.log">the author's Mac</a> and <a href="https://github.com/pratyakshrunsoncaffeine/flipside/blob/e52a849bf7f6ac8f7f9e5ea1d9c0ad5987d42ca5/evidence/m2-reviewer-20261105T172644.log">the reviewer's Windows PC</a>.</p>
     </section>
 
     <section class="col" id="first-agent">
@@ -762,7 +778,7 @@ make demo    <span class="c"># real Switch + Mattermost in Docker, ~2 min</span>
 
 <footer class="wrap">
   <div class="wide">
-    <span>Built in four days for Flip the Switch by Pratyaksh and Aarav Mahajan. All people, code and sessions here are synthetic.</span>
+    <span>Built in four days for Flip the Switch by Pratyaksh and Aarav Mahajan. Priya, Omar and PR #142 are synthetic. The <a href="#two-machines">two-machine run</a> is real.</span>
     <span><a href="https://youtu.be/NAbsKlQAi_c">Video</a> · <a href="https://youtu.be/4QNVMzo3yEI">Uncut run</a> · <a href="https://github.com/pratyakshrunsoncaffeine/flipside">Repo</a></span>
   </div>
 </footer>

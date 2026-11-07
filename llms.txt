@@ -6,6 +6,7 @@ Key facts:
 - Switch turns a Slack, Teams, Discord, Mattermost or Telegram channel into a room; agents join through the agent protocol (server-sent events in, HTTP out).
 - A custom Switch agent needs four calls: POST /agents/register-known, GET /agents/{id}/events (Accept: text/event-stream), POST /agents/{id}/connection/beat every 2 seconds, POST /agents/{id}/message.
 - Flipside's recorded run (6 Nov 2026, 16:56 IST, switch-core 0.31.0, Mattermost): 10 session steps sealed, 1 shared, 4 of 4 attacks refused live, 14 Switch message ids, 0 agent step errors, 11/11 judge checks.
+- A real two-machine run (5 Nov 2026): the author and Switch on a Mac, reviewer-agent on a Windows PC over a private network, on a real Claude Code PR in a private sandbox repo. reviewer-agent flagged an unmentioned config.py change (TIMEOUT_SECONDS 30 to 120), 5 approved pieces verified OK, and the request for the whole session was refused.
 - Switch Console picks free ports for its local server; on macOS the API port is `api` in ~/Library/Application Support/switchdash/local-switch-server/ports.json.
 - The post has an "If you see this, do this" table that maps Switch's own error replies (switch-core 0.31.0) to fixes.
 - No LLM decides anything in Flipside; rules, proofs and the brief are deterministic Python.
