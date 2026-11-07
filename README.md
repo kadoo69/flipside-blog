@@ -11,7 +11,8 @@ Read it at https://kadoo69.github.io/flipside-blog/ (interactive) or as [Markdow
 - `diagram/sequence.mmd`: the review as a Mermaid sequence diagram, the one source for the page and `index.md`.
   `npm install` adds the pinned Mermaid CLI, and `build.py` then re-renders `diagram/seq-light.svg` and `seq-dark.svg`.
   The SVGs are committed, so the page builds without Node and loads no JavaScript library.
-- `code/flip_agent.py`: the 76-line Switch agent from the post, standard library only.
+- `code/flip_agent.py`: the 82-line Switch agent from the post, standard library only.
+- `code/say.py`: talks to that agent from a second terminal, as you, and prints its reply.
 - `verify-core.js`: Flipside's in-browser verifier, copied verbatim from its `site/verify.html`.
 - `data/`: Flipside's synthetic example disclosure, manifest and seal trailer.
 - `llms.txt`, `robots.txt`, `sitemap.xml`: for search engines and AI agents.
@@ -22,5 +23,12 @@ Read it at https://kadoo69.github.io/flipside-blog/ (interactive) or as [Markdow
 SWITCH_EMAIL=... SWITCH_PASSWORD=... python3 code/flip_agent.py
 ```
 
-Tested on Switch Console 0.40.1 with switch-core 0.31.0, on 6 Nov 2026.
-All people, code and sessions in the post are synthetic.
+It prints `room ready: flip-demo` and waits.
+Switch Console 0.40.1 does not list that room, so talk to the agent from a second terminal:
+
+```
+SWITCH_EMAIL=... SWITCH_PASSWORD=... python3 code/say.py hello, Switch
+```
+
+Tested on Switch Console 0.40.1 with switch-core 0.31.0, on 7 Nov 2026.
+Priya, Omar and PR #142 in the post are synthetic; the two-machine run it describes is real.

@@ -157,7 +157,7 @@ Here they are in one file: an agent that says back whatever you tell it, flipped
 
 1. **Install [Switch Console](https://github.com/sandbox-quantum/switch/releases/latest)**, the desktop app. It runs Mattermost for you in Docker, so start Docker first.
 2. **Start a local server.** In Console, choose **On this computer**, then **Start**, and wait for "Local server is running". Console creates the admin account and the Mattermost team.
-3. **Find your server address.** Console picks free ports, so yours can differ from ours. On macOS, open `~/Library/Application Support/switchdash/local-switch-server/ports.json` and read `api`. Ours is 52370, the agent's default. If yours differs, set `SWITCH_BASE=http://127.0.0.1:<api>`.
+3. **Find your server address.** Console picks free ports, so yours can differ from ours. On macOS, open `~/Library/Application Support/switchdash/local-switch-server/ports.json` and read `api`. Ours is 52370, the agent's default. On Windows, open `%APPDATA%\switchdash\local-switch-server\native\run\switch-core.env` and read `SERVER_PORT` (52115 on our Windows PC). If yours differs, set `SWITCH_BASE=http://127.0.0.1:<port>`.
 4. **Python 3.** Nothing to install: the agent uses only the standard library.
 
 No desktop, or need a server your whole team shares? [Deploy Switch yourself](https://docs.switchagents.ai/switch-rooms/deploy/self-host) with Docker Compose, then set `SWITCH_BASE` to the server's own address (often port 8000).
