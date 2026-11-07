@@ -141,7 +141,7 @@ SWITCH_EMAIL=you@example.com SWITCH_PASSWORD=... python3 flip_agent.py
 
 Which login?
 The one you use for Switch Console.
-On a local macOS install, Console keeps its admin login in `switch-core.env` under `~/Library/Application Support/switchdash/`.
+On our macOS install (Console 0.40.1), Console keeps its admin login in `switch-core.env` under `~/Library/Application Support/switchdash/`.
 Keep it on your machine.
 
 Open the `flip-demo` room in Switch Console and type `@flip hello, Switch`.
